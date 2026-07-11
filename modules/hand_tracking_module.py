@@ -17,7 +17,7 @@ class HandDetector():
         self.hands = self.mpHands.Hands()
         self.mpDraw = mp.solutions.drawing_utils
 
-    def findHands(self, img, draw=True):
+    def findHands(self, img, draw=True, bothHands=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
 
@@ -25,6 +25,8 @@ class HandDetector():
             for handLms in self.results.multi_hand_landmarks:
                 if draw:
                     self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
+                    if not bothHands:
+                        break
         return img
 
     def findPosition(self, img, handNo=0, draw=True):

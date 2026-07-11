@@ -1,5 +1,5 @@
-import hand_tracking_module as htm
-import face_detection_module as fdm
+import modules.hand_tracking_module as htm
+import modules.face_detection_module as fdm
 import cv2
 
 def main():

@@ -1,6 +1,7 @@
 import modules.hand_tracking_module as htm
 import cv2
-from pycaw.pycaw import AudioUtilities
+import pyautogui as pag
+
 
 #key variables
 vol_step = 1 #how much to change the volume per increment
@@ -40,17 +41,12 @@ def main():
                     distance = ((x8 - x4) ** 2 + (y8 - y4) ** 2) ** 0.5
                     #print(f"Distance between landmark 4 and 8: {distance:.2f} pixels")
 
-                    #PYCAW: Adjust volume based on distance between landmarks 4 and 8
-                    device = AudioUtilities.GetSpeakers()
-                    volume = device.EndpointVolume
-                    vol = volume.GetMasterVolumeLevel()
                     if distance > distance_threshold:
-                        vol +=vol_step
-                    elif vol < distance_threshold:
-                        vol -=vol_step
+                        pag.press('volumeup')  # Simulate volume up key press
+                    elif distance < distance_threshold:
+                        pag.press('volumedown')  # Simulate volume down key press
 
-                    clamped_vol = max(volume.GetVolumeRange()[0], min(vol, volume.GetVolumeRange()[1]))
-                    volume.SetMasterVolumeLevel(clamped_vol, None)
+
 
                 
                      

@@ -2,7 +2,10 @@ import modules.hand_tracking_module as htm
 import cv2
 from pycaw.pycaw import AudioUtilities
 
-
+#key variables
+vol_step = 1 #how much to change the volume per increment
+distance_threshold = 15 #how far apart fingers need to be to trigger volume change
+palm_base_threshold = 280  #how high palm should be to trigger vol control
 
 def main():
     cap = cv2.VideoCapture(0)#using webcam no 0
@@ -25,7 +28,6 @@ def main():
             # If the palm is above a certain threshold, the volume control will be deactivated.     
             #print(f"Landmark 0 coordinates: {hand0_landmark_coordinates[0]}")
             palm_base_y = hand0_landmark_coordinates[0][1]
-            palm_base_threshold = 280  # Adjust this threshold based on your needs
             if palm_base_y > palm_base_threshold:
                 pass
             else:
@@ -37,13 +39,11 @@ def main():
                     x8,y8 = hand0_landmark_coordinates[8]
                     distance = ((x8 - x4) ** 2 + (y8 - y4) ** 2) ** 0.5
                     #print(f"Distance between landmark 4 and 8: {distance:.2f} pixels")
-                    distance_threshold = 30 
 
                     #PYCAW: Adjust volume based on distance between landmarks 4 and 8
                     device = AudioUtilities.GetSpeakers()
                     volume = device.EndpointVolume
                     vol = volume.GetMasterVolumeLevel()
-                    vol_step = 1
                     if distance > distance_threshold:
                         vol +=vol_step
                     elif vol < distance_threshold:
@@ -54,8 +54,8 @@ def main():
 
                 
                      
-        cv2.imshow("Image", img)
-        cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
+        #cv2.imshow("Image", img)
+        #cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
 
         
         

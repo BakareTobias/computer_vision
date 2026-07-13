@@ -6,10 +6,15 @@ import pyautogui as pag
 #key variables
 vol_step = 1 #how much to change the volume per increment
 distance_threshold = 15 #how far apart fingers need to be to trigger volume change
-palm_base_threshold = 280  #how high palm should be to trigger vol control
+palm_base_threshold = 0.3  #how high palm should be to trigger vol control
+
+
 
 def main():
+    #setup webcam capture and hand detector
     cap = cv2.VideoCapture(0)#using webcam no 0
+    cap.set(3, 640)  # Width
+    cap.set(4, 480)  # Height
     hand_detector = htm.HandDetector()
 
     while True:
@@ -23,13 +28,13 @@ def main():
         
         img = hand_detector.displayFPS(img)
 
-        
         if hand0_landmark_coordinates:
             #use the base of the palm (landmark 0) as switch for activating the volume control. 
-            # If the palm is above a certain threshold, the volume control will be deactivated.     
-            #print(f"Landmark 0 coordinates: {hand0_landmark_coordinates[0]}")
+            # If the palm is above a certain threshold, the volume control will be deactivated. 
+            #print(f"Landmark 0 coordinates: {hand00,hand01}")
             palm_base_y = hand0_landmark_coordinates[0][1]
-            if palm_base_y > palm_base_threshold:
+            palm_base_y_normalized = palm_base_y / img.shape[1]
+            if palm_base_y_normalized > palm_base_threshold:
                 pass
             else:
                 #compute distance between landmarks 4 and 8 if both are detected

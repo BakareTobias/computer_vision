@@ -1,6 +1,7 @@
 import modules.hand_tracking_module as htm
 import cv2
 import pyautogui as pag
+import numpy as np
 
 screen_width, screen_height = pag.size()  # Get the screen size
 #print(f"Screen size: {screen_width}x{screen_height}")
@@ -9,14 +10,30 @@ right_click_test = [100,100,100]
 mouse_smoothingx = [0,0,0]
 mouse_smoothingy = [0,0,0]
 
-scaling_factor = 8
+scaling_factor = 6
 rectangle_top_left = (50, 200)
 rectangle_height = int(screen_height/scaling_factor)
 rectangle_width = int(screen_width/scaling_factor)
 
 rectangle_bottom_right = (rectangle_top_left[0] + rectangle_width, rectangle_top_left[1] + rectangle_height)
 
+#standard Kalman filter params
+measured = []
+predicted = []
+dr_frame = np.zeros((400, 400, 3), np.uint8)
+input = np.array((2, 1), np.float32)
+output = np.zeros((2, 1), np.float32)
 
+
+kalman_fil = cv2.KalmanFilter(4, 2)
+kalman_fil.measurementMatrix = np.array([[1, 0, 0, 0], [0, 1, 0, 0]], np.float32)
+kalman_fil.transitionMatrix = np.array(
+    [[1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0], [0, 0, 0, 1]], np.float32
+)
+kalman_fil.processNoiseCov = (
+    np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], np.float32)
+    * 0.03
+)
 
 def main():
     #setup webcam capture and hand detector
@@ -49,24 +66,32 @@ def main():
             right_click_test.pop(0)
 
             #smoothing by averaging past 3 frames to reduce jitter
-            mouse_smoothingx.append(x8)
+            """ mouse_smoothingx.append(x8)
             mouse_smoothingx.pop(0)
             mouse_smoothedx = sum(mouse_smoothingx)/len(mouse_smoothingx)
 
             mouse_smoothingy.append(y8)
             mouse_smoothingy.pop(0)
             mouse_smoothedy = sum(mouse_smoothingy)/len(mouse_smoothingy)
-
-            
+ """
+            mp = np.array([[np.float32(x8)], [np.float32(y8)]])
+            measured.append((x8, y8))
             
             #check if index fingertip is within the rectangle area 
             if rectangle_top_left[0] <= x8 <= rectangle_bottom_right[0] and rectangle_top_left[1] <= y8 <= rectangle_bottom_right[1]:
                 cv2.circle(img, (x8, y8), 10, (0, 255, 0), cv2.FILLED)  # Draw a green circle at landmark 8
 
+                kalman_fil.correct(mp)
+                tp = kalman_fil.predict()
+
+                mouse_smoothedx = tp[0]
+                mouse_smoothedy = tp[1]
                 
                 x8_mapped = int(screen_width) - ((mouse_smoothedx - rectangle_top_left[0]) * scaling_factor) #flipped x axis
                 y8_mapped = ((mouse_smoothedy - rectangle_top_left[1]) * scaling_factor)
+                pag.FAILSAFE = False
                 pag.moveTo(x8_mapped,y8_mapped)
+                #print(x8_mapped,y8_mapped)
             
                 #check for right click
                 if (16 in hand0_landmark_coordinates) and (12 in hand0_landmark_coordinates) and (8 in hand0_landmark_coordinates): #16 is tip of middle finger               
@@ -88,6 +113,7 @@ def main():
         cv2.rectangle(img, rectangle_top_left, rectangle_bottom_right, (255, 0, 255), 2)  # Draw a rectangle around the webcam feed
 
         #display result
+        img = cv2.flip(img,2)
         cv2.imshow("Image", img)
         cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
 

@@ -8,7 +8,7 @@ vol_step = 1 #how much to change the volume per increment
 distance_threshold = 15 #how far apart fingers need to be to trigger volume change
 palm_base_threshold = 0.3  #how high palm should be to trigger vol control
 
-
+pag.PAUSE = 0
 
 def main():
     #setup webcam capture and hand detector

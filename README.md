@@ -1,6 +1,16 @@
 # A collection of computer vision projects built on opencv and mediapipe 
 
+## Features
 
+- Modular MediaPipe wrapper classes 
+- Real-time hand landmark detection
+- Kalman-filter landmark smoothing
+- Virtual trackpad
+- Gesture-based cursor control
+- Left click
+- Right click
+- Click-and-drag
+- Gesture-based volume control
 
 ## Modules
 The modules are the foundation of the following projects. They are python Classes that make it easy to reuse basic MediaPipe functions e.g. subject detection, landmark detection. 
@@ -37,13 +47,13 @@ Step 3:  Palm above your nose? Okay! Spread your thumb and index finger apart to
 #### How Does it Work?
 Step 1:  The webcam checks if your hand is in view. (So keep your hands where it can see 'em)
 
-Step 2:  There's a rectangle with a purple outline in your webcam feed. This is the virtual trackpad. When your index finger is in this box, the cursor will move accordingly*. 
+Step 2:  A virtual trackpad is displayed in the webcam feed. Moving your index fingertip in this region controls the cursor*, allowing the entire screen to be reached without exaggerated hand movements 
 
 Step 3:  Tap your index and your middle finger together for a left click. Hold them together for a click and hold(higlighting/dragging operations)
 
 Step 4: Tap your index, middle, and ring fingers for a right click. Thats it!
 
-*the cursor uses a smoothing average function, as well as a Kalman filter to reduce output jitter
+*the cursor uses a moving average, as well as a Kalman filter to reduce output jitter while preserving responsiveness
 
 #### Libraries used: opencv, mediapipe, pynput(smoother mouth experience than pyautogui)
 

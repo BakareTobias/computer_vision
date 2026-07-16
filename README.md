@@ -24,9 +24,28 @@ Step 2:  It will do nothing if the base of your palm ([Landmark 0](#final-image)
 
 Step 3:  Palm above your nose? Okay! Spread your thumb and index finger apart to raise the volume, and touch them together to reduce it.
 
+### 2. Mouse Control using fingers
 
+#### Demo
+<img width="360" height="202" alt="awrkbo" src="https://github.com/user-attachments/assets/54a483db-f080-4670-b6ba-c729be263d3e" />
 
-#### Libraries used: opencv, mediapipe, pyautogui
+#### Setup
+    git clone https://github.com/BakareTobias/computer_vision.git
+    pip install -r requirements.txt
+    python3 finger_mouse.py
+
+#### How Does it Work?
+Step 1:  The webcam checks if your hand is in view. (So keep your hands where it can see 'em)
+
+Step 2:  There's a rectangle with a purple outline in your webcam feed. This is the virtual trackpad. When your index finger is in this box, the cursor will move accordingly*. 
+
+Step 3:  Tap your index and your middle finger together for a left click. Hold them together for a click and hold(higlighting/dragging operations)
+
+Step 4: Tap your index, middle, and ring fingers for a right click. Thats it!
+
+*the cursor uses a smoothing average function, as well as a Kalman filter to create a smoother output
+
+#### Libraries used: opencv, mediapipe, pynput(smoother mouth experience than pyautogui)
 
 <a name="final-image"></a>
 <img width="590" height="537" alt="image" src="https://github.com/user-attachments/assets/d5bd8364-8a81-42eb-97e0-9a5e665775d0" />

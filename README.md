@@ -43,7 +43,7 @@ Step 3:  Tap your index and your middle finger together for a left click. Hold t
 
 Step 4: Tap your index, middle, and ring fingers for a right click. Thats it!
 
-*the cursor uses a smoothing average function, as well as a Kalman filter to create a smoother output
+*the cursor uses a smoothing average function, as well as a Kalman filter to reduce output jitter
 
 #### Libraries used: opencv, mediapipe, pynput(smoother mouth experience than pyautogui)
 

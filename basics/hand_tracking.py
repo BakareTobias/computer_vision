@@ -12,7 +12,12 @@ mpHands = mp.solutions.hands#using hands module from mediapipe
         detection confidence  0.5   # threshold for detection confidence
         tracking confidence  0.5    # threshold for tracking confidence
 """
-hands = mpHands.Hands()
+hands = mpHands.Hands(
+        static_image_mode = False,    # if True, will continuously detect hands in the video stream, slowing function down
+        max_num_hands  =2,           # maximum number of hands to detect
+        dec =  0.5,   # threshold for detection confidence
+        tracking_confidence = 0.5    # threshold for tracking confidence
+)
 mpDraw = mp.solutions.drawing_utils#drawing utils to draw the landmarks and connections on the hand
 
 pTime = 0

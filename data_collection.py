@@ -6,7 +6,7 @@ import csv
 
 path = 'ML_pipeline/datasets'
 #1. start media pipe and hand detection with landmarks
-def main(label):
+def main(label,new_file):
     #setup webcam capture and hand detector
     cap = cv2.VideoCapture(0)#using webcam no 0
     cap.set(1, 640)  # Width
@@ -21,14 +21,13 @@ def main(label):
     file = label + ".csv"
 
     #define headers
-    headers = ['x0', 'y0', 'x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4', 'x5', 'y5', 'x6', 'y6', 'x7', 'y7', 'x8', 'y8', 'x9', 'y9', 'x10', 'y10', 'x11', 'y11', 'x12', 'y12', 'x13', 'y13', 'x14', 'y14', 'x15', 'y15', 'x16', 'y16', 'x17', 'y17', 'x18', 'y18', 'x19', 'y19', 'x20', 'y20', 'x21', 'y21']
-    headers.append(label)
-
-    #create csv file, add headers
-    with open(os.path.join(path, file), 'w', newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow( headers)
-        pass
+    headers = ['x0', 'y0', 'x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4', 'x5', 'y5', 'x6', 'y6', 'x7', 'y7', 'x8', 'y8', 'x9', 'y9', 'x10', 'y10', 'x11', 'y11', 'x12', 'y12', 'x13', 'y13', 'x14', 'y14', 'x15', 'y15', 'x16', 'y16', 'x17', 'y17', 'x18', 'y18', 'x19', 'y19', 'x20', 'y20', 'x21', 'y21','label']
+    if new_file:
+        #create csv file, add headers
+        with open(os.path.join(path, file), 'w', newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow( headers)
+            
     while True:
         #setup image capture from webcam
         success, img = cap.read()#reading the image from webcam
@@ -81,4 +80,4 @@ def main(label):
 
 
 if __name__ == "__main__":
-    main(label='peace')
+    main(label='high_five',new_file=False)

@@ -1,6 +1,9 @@
 import pandas as pd
+from sklearn import metrics
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+import pickle
 
 # TRAINING BINARY CLASSIFICATION MODEL
 
@@ -37,8 +40,22 @@ def main(labels):
 
     #load into training model 
     #train model?
-    #test model
+    log_reg = LogisticRegression()
+    log_reg.fit(X_train, y_train)
 
+    #test model
+    y_pred = log_reg.predict(X_test)
+    cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+    print('Confusion matrix')
+    print(cnf_matrix)
+
+    print('Precision:', metrics.precision_score(y_test, y_pred))
+    print('Recall:', metrics.recall_score(y_test, y_pred))
+    print('F1 Score:', metrics.f1_score(y_test, y_pred))
+
+    #save model
+    with open('ML_pipeline/models/log_reg_01.pkl', 'wb') as f:
+        pickle.dump(log_reg, f) 
 
 if __name__ == '__main__':
     main(['peace','high_five'])

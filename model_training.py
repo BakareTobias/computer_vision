@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn import metrics
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import pickle
 
@@ -40,11 +40,11 @@ def main(labels):
 
     #load into training model 
     #train model?
-    log_reg = LogisticRegression()
-    log_reg.fit(X_train, y_train)
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
 
     #test model
-    y_pred = log_reg.predict(X_test)
+    y_pred = model.predict(X_test)
     cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
     print('Confusion matrix')
     print(cnf_matrix)
@@ -54,8 +54,8 @@ def main(labels):
     print('F1 Score:', metrics.f1_score(y_test, y_pred))
 
     #save model
-    with open('ML_pipeline/models/log_reg_01.pkl', 'wb') as f:
-        pickle.dump(log_reg, f) 
+    with open('ML_pipeline/models/random_forest_01.pkl', 'wb') as f:
+        pickle.dump(model, f) 
 
 if __name__ == '__main__':
     main(['peace','high_five'])

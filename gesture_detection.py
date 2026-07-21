@@ -12,7 +12,9 @@ def main():
 
     #callback to hand detector module
     hand_detector = htm.HandDetector()
-
+    # load model
+    with open('ML_pipeline/models/random_forest_01.pkl', 'rb') as f:
+        log_reg = pickle.load(f)
 
     while True:
         #setup image capture from webcam
@@ -33,28 +35,35 @@ def main():
                 
                 #2 b. each landmark coordinate normalized according to palm width(5-17)
                 standard_hand_width =  abs(hand0_landmark_coordinates[5][0] - hand0_landmark_coordinates[17][0])
-                x /= standard_hand_width
-                # and palm height(0-5)
-                standard_hand_height = abs(hand0_landmark_coordinates[0][1] - hand0_landmark_coordinates[5][1])
-                y /= standard_hand_height
+                try:#skip edge cases that cause division by zero error
+                    x /= standard_hand_width
+                    # and palm height(0-5)
+                    standard_hand_height = abs(hand0_landmark_coordinates[0][1] - hand0_landmark_coordinates[5][1])
+                    y /= standard_hand_height
 
-                x = round(x,6)
-                y = round(y,6)
+                    x = round(x,6)
+                    y = round(y,6)
 
-                dataset_instance.append(x)
-                dataset_instance.append(y)
+                    dataset_instance.append(x)
+                    dataset_instance.append(y)
 
-            dataset_instance = pd.DataFrame(dataset_instance).T
-            print(dataset_instance.shape)
-            # load
-            with open('ML_pipeline/models/log_reg_01.pkl', 'rb') as f:
-                log_reg = pickle.load(f)
-            gesture_detected = log_reg.predict(dataset_instance)
-            if gesture_detected == 0:
-                gesture_detected = 'Peace sign'
-            elif gesture_detected == 1:
-                gesture_detected = 'High Five'
-            cv2.putText(img, f"{gesture_detected}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                except ZeroDivisionError:
+                    print('Zero error')
+                    break
+               
+            try:#skip edge cases that cause division by zero error
+
+                dataset_instance = pd.DataFrame(dataset_instance).T
+                gesture_detected = log_reg.predict(dataset_instance)
+                
+                if gesture_detected == 0:
+                    gesture_detected = 'Peace sign'
+                elif gesture_detected == 1:
+                    gesture_detected = 'High Five'
+                cv2.putText(img, f"{gesture_detected}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            except ValueError:
+                pass
+
         cv2.imshow("Image", img)
         cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
 

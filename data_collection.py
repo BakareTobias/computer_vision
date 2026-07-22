@@ -80,4 +80,4 @@ def main(label,new_file):
 
 
 if __name__ == "__main__":
-    main(label='high_five',new_file=False)
+    main(label='f_sign',new_file=True)

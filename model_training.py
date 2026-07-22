@@ -10,17 +10,17 @@ import pickle
 def main(labels):
 
     dfs = []
+    gesture_to_id = {}
     #load csv
-    for label in labels:
+    for i, label in enumerate(labels):
         df = pd.read_csv(f"ML_pipeline/datasets/{label}.csv")
         dfs.append(df)
+        #map use numbers to represent classes
+        gesture_to_id[f"{label}"] = i
     combined = pd.concat(dfs,ignore_index=True)
+    
 
-    #replace peace sign with 0, high_five with 1
-    gesture_to_id = {
-        "peace": 0,
-        "high_five": 1
-    }
+    #map labels to new number classifications
     combined["label"] = combined["label"].map(gesture_to_id)
 
 
@@ -49,13 +49,13 @@ def main(labels):
     print('Confusion matrix')
     print(cnf_matrix)
 
-    print('Precision:', metrics.precision_score(y_test, y_pred))
-    print('Recall:', metrics.recall_score(y_test, y_pred))
-    print('F1 Score:', metrics.f1_score(y_test, y_pred))
+    print('Precision:', metrics.precision_score(y_test, y_pred,average=None))
+    print('Recall:', metrics.recall_score(y_test, y_pred,average=None))
+    print('F1 Score:', metrics.f1_score(y_test, y_pred,average=None))
 
     #save model
-    with open('ML_pipeline/models/random_forest_01.pkl', 'wb') as f:
+    with open(f'ML_pipeline/models/random_forest_0{len(labels)-1}.pkl', 'wb') as f:
         pickle.dump(model, f) 
 
 if __name__ == '__main__':
-    main(['peace','high_five'])
+    main(['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch'])

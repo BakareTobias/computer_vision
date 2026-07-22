@@ -13,8 +13,10 @@ def main():
     #callback to hand detector module
     hand_detector = htm.HandDetector()
     # load model
-    with open('ML_pipeline/models/random_forest_01.pkl', 'rb') as f:
+    with open('ML_pipeline/models/random_forest_06.pkl', 'rb') as f:
         log_reg = pickle.load(f)
+
+    classes = ['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch']
 
     while True:
         #setup image capture from webcam
@@ -55,12 +57,13 @@ def main():
 
                 dataset_instance = pd.DataFrame(dataset_instance).T
                 gesture_detected = log_reg.predict(dataset_instance)
-                
-                if gesture_detected == 0:
-                    gesture_detected = 'Peace sign'
-                elif gesture_detected == 1:
-                    gesture_detected = 'High Five'
-                cv2.putText(img, f"{gesture_detected}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                proba = log_reg.predict_proba(dataset_instance)
+                proba = proba[0][gesture_detected[0]]
+                #cv2.putText(img, f"{classes[gesture_detected[0]]} {proba[0][gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                if proba > 0.5:
+                    cv2.putText(img, f"{classes[gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                else:
+                    cv2.putText(img, "Unrecognized", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             except ValueError:
                 pass
 

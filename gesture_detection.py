@@ -13,10 +13,10 @@ def main():
     #callback to hand detector module
     hand_detector = htm.HandDetector()
     # load model
-    with open('ML_pipeline/models/random_forest_06.pkl', 'rb') as f:
+    with open('ML_pipeline/models/random_forest_as.pkl', 'rb') as f:
         log_reg = pickle.load(f)
 
-    classes = ['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch']
+    classes = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S']
 
     while True:
         #setup image capture from webcam
@@ -60,7 +60,7 @@ def main():
                 proba = log_reg.predict_proba(dataset_instance)
                 proba = proba[0][gesture_detected[0]]
                 #cv2.putText(img, f"{classes[gesture_detected[0]]} {proba[0][gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                if proba > 0.5:
+                if proba > 0.3:
                     cv2.putText(img, f"{classes[gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 else:
                     cv2.putText(img, "Unrecognized", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)

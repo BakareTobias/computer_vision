@@ -13,12 +13,12 @@ def main(labels):
     gesture_to_id = {}
     #load csv
     for i, label in enumerate(labels):
-        df = pd.read_csv(f"ML_pipeline/datasets/{label}.csv")
+        df = pd.read_csv(f"ML_pipeline/ASL/{label}.csv")
         dfs.append(df)
+        
         #map use numbers to represent classes
         gesture_to_id[f"{label}"] = i
     combined = pd.concat(dfs,ignore_index=True)
-    
 
     #map labels to new number classifications
     combined["label"] = combined["label"].map(gesture_to_id)
@@ -26,7 +26,7 @@ def main(labels):
 
     X = combined.iloc[:, :-1]
     y = combined.iloc[:, -1]
-
+    #combined.to_csv('xxx.csv',index=False)
 
     #split both csv 70/20/10 train/test/test_2
     X_train, X_test, y_train, y_test = train_test_split(
@@ -54,8 +54,9 @@ def main(labels):
     print('F1 Score:', metrics.f1_score(y_test, y_pred,average=None))
 
     #save model
-    with open(f'ML_pipeline/models/random_forest_0{len(labels)-1}.pkl', 'wb') as f:
+    with open(f'ML_pipeline/models/random_forest_as.pkl', 'wb') as f:
         pickle.dump(model, f) 
 
 if __name__ == '__main__':
-    main(['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch'])
+    main(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S'])
+    #['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch']

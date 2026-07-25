@@ -65,7 +65,7 @@ def main():
             proba = proba[0][gesture_detected[0]]
             #cv2.putText(img, f"{classes[gesture_detected[0]]} {proba[0][gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             if proba > 0.5:
-                cv2.putText(img, f"{classes[gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                #cv2.putText(img, f"{classes[gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 if frame_counter % 5 == 0: 
             
                     #if thumb tip above landmark 0, scroll up, if below scroll down
@@ -80,8 +80,8 @@ def main():
         except ValueError:
             pass    
         #display result
-        img = cv2.flip(img,2)#flipped on x axis so finger movements, camera output, and cursor movement all align
-        hand_detector.displayFPS(img)
+        #img = cv2.flip(img,2)#flipped on x axis so finger movements, camera output, and cursor movement all align
+        #hand_detector.displayFPS(img)
 
         #cv2.imshow("Image", img)
         #cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame

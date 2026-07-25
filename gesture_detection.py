@@ -1,6 +1,6 @@
 import modules.hand_tracking_module as htm
+import modules.hand_gesture_detection_module as hgd
 import cv2
-import pickle
 import pandas as pd
 
 #1. start media pipe and hand detection with landmarks
@@ -10,14 +10,15 @@ def main():
     cap.set(1, 640)  # Width
     cap.set(4, 480)  # Height
 
-    #callback to hand detector module
-    hand_detector = htm.HandDetector()
     # load model
-    with open('ML_pipeline/models/random_forest_as.pkl', 'rb') as f:
-        log_reg = pickle.load(f)
-
+    path_to_model = 'ML_pipeline/models/random_forest_as.pkl'
+    
     classes = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S']
 
+    #load modules
+    hand_detector = htm.HandDetector()
+    gesture_detector = hgd.GestureDetection(path_to_model=path_to_model)
+    
     while True:
         #setup image capture from webcam
         success, img = cap.read()#reading the image from webcam
@@ -26,46 +27,18 @@ def main():
         #only one hand is tracked for this program
         hand0_landmark_coordinates = hand_detector.findPosition(img, handNo=0, draw=False)
         
-        #2. every X frames, capture the landmarks
         if hand0_landmark_coordinates:
-            dataset_instance = []
-            for key in hand0_landmark_coordinates:
-                #2 a. each landmark recomputed as position relative to landmark_0
-                # flipped y axis(it has 0 at the top of window)
-                x = hand0_landmark_coordinates[key][0] - hand0_landmark_coordinates[0][0]
-                y = -1 * (hand0_landmark_coordinates[key][1] - hand0_landmark_coordinates[0][1]) 
-                
-                #2 b. each landmark coordinate normalized according to palm width(5-17)
-                standard_hand_width =  abs(hand0_landmark_coordinates[5][0] - hand0_landmark_coordinates[17][0])
-                try:#skip edge cases that cause division by zero error
-                    x /= standard_hand_width
-                    # and palm height(0-5)
-                    standard_hand_height = abs(hand0_landmark_coordinates[0][1] - hand0_landmark_coordinates[5][1])
-                    y /= standard_hand_height
+            #normalize landmarks to generate dataset instance
+            norm_landmarks = hand_detector.normalizeLandmarks(hand0_landmark_coordinates)
+            #will return none if Zero error occurs   
+            if norm_landmarks is not None:
+                #run ml model on dataset instance to predict as well as confidence score
+                gesture_detected, confidence = gesture_detector.predict(dataset_instance=norm_landmarks,classes=classes)
 
-                    x = round(x,6)
-                    y = round(y,6)
-
-                    dataset_instance.append(x)
-                    dataset_instance.append(y)
-
-                except ZeroDivisionError:
-                    print('Zero error')
-                    break
-               
-            try:#skip edge cases that cause division by zero error
-
-                dataset_instance = pd.DataFrame(dataset_instance).T
-                gesture_detected = log_reg.predict(dataset_instance)
-                proba = log_reg.predict_proba(dataset_instance)
-                proba = proba[0][gesture_detected[0]]
-                #cv2.putText(img, f"{classes[gesture_detected[0]]} {proba[0][gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                if proba > 0.3:
-                    cv2.putText(img, f"{classes[gesture_detected[0]]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                if confidence > 0.3:
+                    cv2.putText(img, f"{gesture_detected}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 else:
                     cv2.putText(img, "Unrecognized", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            except ValueError:
-                pass
 
         cv2.imshow("Image", img)
         cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame

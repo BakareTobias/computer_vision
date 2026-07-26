@@ -54,9 +54,9 @@ def main(labels):
     print('F1 Score:', metrics.f1_score(y_test, y_pred,average=None))
 
     #save model
-    with open(f'ML_pipeline/models/random_forest_as.pkl', 'wb') as f:
+    with open(f'ML_pipeline/models/random_forest_as_thumbsup_pinch.pkl', 'wb') as f:
         pickle.dump(model, f) 
 
 if __name__ == '__main__':
-    main(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S'])
+    main(['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S','thumbs_up','pinch'])
     #['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch']

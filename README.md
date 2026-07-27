@@ -4,6 +4,7 @@ A collection of computer vision projects built on **OpenCV** and **MediaPipe**.
 
 ## Features
 
+- Alphabet-Level ASL Translation Interface
 - Gesture recognition using a Random Forest Classifier
 - Modular MediaPipe wrapper classes
 - Real-time hand landmark detection
@@ -129,6 +130,16 @@ The model performed very well on live camera feed and static images, detecting t
 
 `opencv`, `mediapipe`, `sklearn`, `pandas`, `pickle`
 
+### 4. Alphabet-Level ASL Translation Interface
+
+#### Demo
+<img width="360" height="270" alt="cdf4e035-deca-45ac-807e-f5ecae65f9dc" src="https://github.com/user-attachments/assets/cdc57a23-06b4-42e3-9c83-b85b9ed95a55" />
+
+
+#### How it works
+
+
+Building on the gesture recognition pipeline in project 3, a Random Forest Classifier is trained with 100+ instances, recorded for each letter of the alphabet. 'Thumbs up' and 'pinch' gestures are also included as space and backspace respectively
 
 <a name="final-image"></a>
 

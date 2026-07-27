@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import pandas as pd
 
 
 
@@ -48,6 +49,36 @@ class HandDetector():
             except IndexError:
                 return None
         return landmark_coordinates
+
+    def normalizeLandmarks(self,landmark_coordinates):
+        normalized_landmarks = []
+        for key in landmark_coordinates:
+            #each landmark recomputed as position relative to landmark_0
+            # flipped y axis(it has 0 at the top of window)
+            x = landmark_coordinates[key][0] - landmark_coordinates[0][0]
+            y = -1 * (landmark_coordinates[key][1] - landmark_coordinates[0][1]) 
+            
+            #each landmark coordinate normalized according to palm width(5-17)
+            standard_hand_width =  abs(landmark_coordinates[5][0] - landmark_coordinates[17][0])
+            try:#skip edge cases that cause division by zero error
+                x /= standard_hand_width
+                # and palm height(0-5)
+                standard_hand_height = abs(landmark_coordinates[0][1] - landmark_coordinates[5][1])
+                y /= standard_hand_height
+
+                x = round(x,6)
+                y = round(y,6)
+
+                normalized_landmarks.append(x)
+                normalized_landmarks.append(y)
+
+            except ZeroDivisionError:
+                #print('Zero error')
+                normalized_landmarks = None
+                break
+        if normalized_landmarks:
+            normalized_landmarks = pd.DataFrame(normalized_landmarks).T
+        return normalized_landmarks
 
     def displayFPS(self, img):
         self.cTime = time.time()

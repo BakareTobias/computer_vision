@@ -5,12 +5,21 @@ import modules.hand_tracking_module as htm
 import modules.hand_gesture_detection_module as hgd
 import cv2
 import math
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 
 
 st.title('ASL Interface')
-st.text("Alphabet level ASL translator. Can recognize all 26 letters. Uses a thumbs up as a space bar, and a pinch as backspace")
+st.markdown(
+    """
+This app types letters as you sign them in **American Sign Language (ASL)**.
+Show a hand sign to the webcam and hold it steady — the recognized letter is
+typed into the text box automatically.
+ 
+- 👍 **Thumbs up** → space
+- 🤏 **Pinch** (touch thumb + index finger tip) → backspace
 
+GitHub link: https://github.com/BakareTobias/computer_vision
+"""
+)
 
 #1. start media pipe and hand detection with landmarks
 def main():
@@ -58,12 +67,13 @@ def main():
                     if gesture_detected == 'pinch':
                         if frame_counter % frame_rate == 0:
                             text = text[:-1]
-                        cv2.putText(img, "Backspace", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                            
+                        #cv2.putText(img, "Backspace", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
                     elif gesture_detected == 'thumbs_up':
                         if frame_counter % frame_rate == 0:
                             text += ' '
-                        cv2.putText(img, "Space", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        #cv2.putText(img, "Space", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
                     elif gesture_detected != last_predict:
                         if frame_counter % frame_rate == 0:

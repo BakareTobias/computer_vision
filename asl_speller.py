@@ -11,8 +11,8 @@ def main():
     cap.set(4, 480)  # Height
 
     # load model
-    path_to_model = 'ML_pipeline/models/random_forest_as_thumbsup_pinch.pkl'
-    classes = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S','thumbs_up','pinch']
+    path_to_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
+    classes = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
 
     #load modules
     hand_detector = htm.HandDetector()

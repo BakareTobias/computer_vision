@@ -48,30 +48,35 @@ def main(label,video_path,csv_path,clip_id=0):
             hand0_norm = hand_detector.normalizeLandmarks(hand0_landmark_coordinates)
             #init hand1 as  zeros
             dataset_instance = hand0_norm
-            hand1_norm = pd.DataFrame(np.zeros(hand0_norm.shape)) 
-            dataset_instance["dist_x"] = 0
-            dataset_instance["dist_y"] = 0
-
-
+            try:
+                hand1_norm = pd.DataFrame(np.zeros(hand0_norm.shape)) 
             
-            if hand1_landmark_coordinates:
-                hand1_norm = hand_detector.normalizeLandmarks(hand1_landmark_coordinates)
-                h0x0, h0y0 = hand0_landmark_coordinates[0]
-                h1x0, h1y0 = hand1_landmark_coordinates[0]
-                
+                dataset_instance["dist_x"] = 0
+                dataset_instance["dist_y"] = 0
 
-                #standard width and height
-                standard_hand_width =  abs(hand0_landmark_coordinates[5][0] - hand0_landmark_coordinates[17][0])
-                standard_hand_height = abs(hand0_landmark_coordinates[0][1] - hand0_landmark_coordinates[5][1])
-
-                #distance between palms, scaled by standard palm dimensions
-                dist_x = (h1x0 - h0x0)/standard_hand_width
-                dist_y = (h1y0 - h0y0)/standard_hand_height
 
                 
-                dataset_instance["dist_x"] = dist_x
-                dataset_instance["dist_y"] = dist_y
+                if hand1_landmark_coordinates:
+                    hand1_norm = hand_detector.normalizeLandmarks(hand1_landmark_coordinates)
+                    h0x0, h0y0 = hand0_landmark_coordinates[0]
+                    h1x0, h1y0 = hand1_landmark_coordinates[0]
+                    
 
+                    #standard width and height
+                    standard_hand_width =  abs(hand0_landmark_coordinates[5][0] - hand0_landmark_coordinates[17][0])
+                    standard_hand_height = abs(hand0_landmark_coordinates[0][1] - hand0_landmark_coordinates[5][1])
+
+                    #distance between palms, scaled by standard palm dimensions
+                    dist_x = (h1x0 - h0x0)/standard_hand_width
+                    dist_y = (h1y0 - h0y0)/standard_hand_height
+
+                    
+                    dataset_instance["dist_x"] = dist_x
+                    dataset_instance["dist_y"] = dist_y
+            except AttributeError:
+                print("Error: hand0_norm is None. Skipping this frame.")
+                #print("hand0_landmark_coordinates:", hand0_landmark_coordinates)
+                pass
             dataset_instance = pd.concat([hand0_norm, hand1_norm], axis=1)
 
 
@@ -93,14 +98,14 @@ def main(label,video_path,csv_path,clip_id=0):
 
 video_path = 'ML_pipeline/ASL_words/cool/cool_13196.mp4'
 label = 'cool'
-csv_path = 'ML_pipeline/ASL_words/cool.csv'
+csv_path = 'ML_pipeline/ASL_alphabet/Z.csv'
 
 #main(label,video_path,csv_path)
 
-folder = os.listdir('ML_pipeline/ASL_words/cool')
+folder = os.listdir('ML_pipeline/ASL_alphabet/Z')
 for i, clip in enumerate(folder):
-    video_path = 'ML_pipeline/ASL_words/cool/' + clip
+    video_path = 'ML_pipeline/ASL_alphabet/Z/' + clip
     try:
-        main('cool',video_path,csv_path,i)
+        main('Z',video_path,csv_path,i)
     except cv2.error:
         pass

@@ -4,7 +4,7 @@ import os
 import csv
 
 
-path = 'ML_pipeline/ASL'
+path = 'ML_pipeline/ASL_alphabet'
 #1. start media pipe and hand detection with landmarks
 def main(label,new_file):
     #setup webcam capture and hand detector
@@ -16,6 +16,7 @@ def main(label,new_file):
     hand_detector = htm.HandDetector()
 
     counter = 0
+    capture_rate = 15 #capture every 15 frames
 
     #create label.csv
     file = label + ".csv"
@@ -38,7 +39,7 @@ def main(label,new_file):
         
         #2. every X frames, capture the landmarks
         if hand0_landmark_coordinates:
-            if (counter % 15) == 0:
+            if (counter % capture_rate) == 0:
 
                 dataset_instance = []
                 for key in hand0_landmark_coordinates:
@@ -75,10 +76,12 @@ def main(label,new_file):
         img = cv2.flip(img,2)#flipped on x axis so finger movements, camera output, and cursor movement all align
 
         #7. save dataset to ML_pipeline/datasets
+        cv2.putText(img, f"Collecting {label} data", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(img, f"Frames captured: {counter//capture_rate}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow("Image", img)
         cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
 
 
 
 if __name__ == "__main__":
-    main(label='R',new_file=True)
+    main(label='S',new_file=True)

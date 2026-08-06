@@ -98,7 +98,7 @@ def main(label,video_path,csv_path,clip_id=0):
 
 video_path = 'ML_pipeline/ASL_words/cool/cool_13196.mp4'
 label = 'cool'
-csv_path = 'ML_pipeline/ASL_alphabet/Z.csv'
+csv_path = 'ML_pipeline/ASL_alphabet/Zz.csv'
 
 #main(label,video_path,csv_path)
 

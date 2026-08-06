@@ -2,6 +2,8 @@ import modules.hand_tracking_module as htm
 import modules.hand_gesture_detection_module as hgd
 import cv2
 import math
+from keras.models import load_model
+import numpy as np
 
 #1. start media pipe and hand detection with landmarks
 def main():
@@ -11,17 +13,22 @@ def main():
     cap.set(4, 480)  # Height
 
     # load model
-    path_to_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
-    classes = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
+    path_to_RF_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
+    LSTM_model = load_model('ML_pipeline/models/LSTM_jz.keras')
+
+    classes_static = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
+    classes_dynamic = ['J','Z']
 
     #load modules
     hand_detector = htm.HandDetector()
-    gesture_detector = hgd.GestureDetection(path_to_model=path_to_model)
+    gesture_detector = hgd.GestureDetection(path_to_model=path_to_RF_model)
 
     text = ''
     last_predict = math.inf
     frame_rate = 7
     frame_counter = 0
+
+    clip = []
 
     while True:
         #setup image capture from webcam
@@ -36,8 +43,29 @@ def main():
             norm_landmarks = hand_detector.normalizeLandmarks(hand0_landmark_coordinates)
             #will return none if Zero error occurs   
             if norm_landmarks is not None:
+                #add frames to rolling buffer 'clip' for dynamic gestures
+                dynamic_landmarks = norm_landmarks.iloc[:, [8,9,20,21]]
+                clip.append(dynamic_landmarks)
+
+                #if clip has enough frames, run LSTM model to predict dynamic gesture
+                #also remove the oldest frame from clip to maintain a rolling buffer of 27 frames
+                if len(clip) == 27:
+                    #run ml model on dataset instance to predict as well as confidence score
+                    dynamic_input = np.array(clip).reshape(1,27,4)
+                    gesture_detected_dynamic = LSTM_model.predict(dynamic_input)
+
+                    predicted_class = np.argmax(gesture_detected_dynamic, axis=1)[0]
+                    confidence_dynamic = np.max(gesture_detected_dynamic)
+                    gesture_name = classes_dynamic[predicted_class]
+                    #print(gesture_detected_dynamic)
+                    if confidence_dynamic > 0.9:
+                        text += str(gesture_name)
+                        last_predict = gesture_name
+                        clip = []  # Clear the clip after prediction
+                    else:
+                        clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
                 #run ml model on dataset instance to predict as well as confidence score
-                gesture_detected, confidence = gesture_detector.predict(dataset_instance=norm_landmarks,classes=classes)
+                gesture_detected, confidence = gesture_detector.predict(dataset_instance=norm_landmarks,classes=classes_static)
 
                 if confidence > 0.5:
                     #can only hit space/backspace once every X frames

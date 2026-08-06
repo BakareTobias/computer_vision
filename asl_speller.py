@@ -14,10 +14,10 @@ def main():
 
     # load model
     path_to_RF_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
-    LSTM_model = load_model('ML_pipeline/models/LSTM_jz.keras')
+    LSTM_model = load_model('ML_pipeline/models/LSMT_jz_all_landmarks_other.keras')
 
     classes_static = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
-    classes_dynamic = ['J','Z']
+    classes_dynamic = ['J','Z','other']
 
     #load modules
     hand_detector = htm.HandDetector()
@@ -44,26 +44,28 @@ def main():
             #will return none if Zero error occurs   
             if norm_landmarks is not None:
                 #add frames to rolling buffer 'clip' for dynamic gestures
-                dynamic_landmarks = norm_landmarks.iloc[:, [8,9,20,21]]
-                clip.append(dynamic_landmarks)
+                #dynamic_landmarks = norm_landmarks.iloc[:, [8,9,20,21]]
+                clip.append(norm_landmarks)
+                
 
                 #if clip has enough frames, run LSTM model to predict dynamic gesture
                 #also remove the oldest frame from clip to maintain a rolling buffer of 27 frames
                 if len(clip) == 27:
                     #run ml model on dataset instance to predict as well as confidence score
-                    dynamic_input = np.array(clip).reshape(1,27,4)
+                    dynamic_input = np.array(clip).reshape(1,27,42)
                     gesture_detected_dynamic = LSTM_model.predict(dynamic_input)
 
                     predicted_class = np.argmax(gesture_detected_dynamic, axis=1)[0]
                     confidence_dynamic = np.max(gesture_detected_dynamic)
                     gesture_name = classes_dynamic[predicted_class]
                     #print(gesture_detected_dynamic)
-                    if confidence_dynamic > 0.9:
+                    if gesture_name == 'other':
+                        clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
+                    else:
                         text += str(gesture_name)
                         last_predict = gesture_name
                         clip = []  # Clear the clip after prediction
-                    else:
-                        clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
+                        
                 #run ml model on dataset instance to predict as well as confidence score
                 gesture_detected, confidence = gesture_detector.predict(dataset_instance=norm_landmarks,classes=classes_static)
 

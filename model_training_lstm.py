@@ -27,6 +27,7 @@ def main(labels):
 
     #take only hand0 8,20,label,clip_id because only landmarks key for J and Z gestures
     #combined = combined.iloc[:, [8,9,20,21,-2,-1]]
+    combined = combined.iloc[:, [*range(42), -2, -1]]  # Include all columns except the last two (label and clip_id)
 
     no_clips = combined['clip_id'].nunique()
     no_labels = combined['label'].nunique()
@@ -79,6 +80,7 @@ def main(labels):
     #print a summary of model architecture, including the number of parameters in each layer and the total number of parameters in the model
     model.summary()
 
+    print(f"X_train shape: {np.array(X_train).shape}")
     X_train = np.array(X_train)
     X_test = np.array(X_test)
     y_train = np.array(y_train)
@@ -92,8 +94,8 @@ def main(labels):
     print(f"Test Accuracy: {accuracy:.2f}")
 
     #save model
-    model.save("ML_pipeline/models/LSMT_jz_all_landmarks.keras") 
+    model.save("ML_pipeline/models/LSMT_jz_all_landmarks_other.keras") 
 
 if __name__ == '__main__':
-    main(['J','Z'])
+    main(['J','Z','other'])
     #['peace','high_five','sixer',"thumbs_up",'f_sign','take_the_l','pinch']

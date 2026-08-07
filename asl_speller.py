@@ -13,7 +13,7 @@ def main():
     cap.set(4, 480)  # Height
 
     # load model
-    path_to_RF_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
+    path_to_RF_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch2.pkl'
     LSTM_model = load_model('ML_pipeline/models/LSMT_jz_all_landmarks_other.keras')
 
     classes_static = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
@@ -34,6 +34,7 @@ def main():
         #setup image capture from webcam
         success, img = cap.read()#reading the image from webcam
         img = hand_detector.findHands(img,bothHands=False,draw=True)
+        img = cv2.flip(img,2)#flipped on x axis
 
         #only one hand is tracked for this program
         hand0_landmark_coordinates = hand_detector.findPosition(img, handNo=0, draw=False)
@@ -61,7 +62,7 @@ def main():
                     #print(gesture_detected_dynamic)
                     if gesture_name == 'other':
                         clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
-                    else:
+                    elif confidence_dynamic > 0.4 and gesture_name != last_predict:
                         text += str(gesture_name)
                         last_predict = gesture_name
                         clip = []  # Clear the clip after prediction

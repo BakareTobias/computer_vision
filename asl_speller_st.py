@@ -124,7 +124,7 @@ def main():
                 #run ml model on dataset instance to predict as well as confidence score
                 gesture_detected, confidence = gesture_detector.predict(dataset_instance=norm_landmarks,classes=classes_static)
 
-                if confidence > 0.5:
+                if confidence > 0.4:
                     #can only hit space/backspace once every X frames
 
                     if gesture_detected == 'pinch':

@@ -22,12 +22,13 @@ def main(labels):
 
     #map labels to new number classifications
     combined["label"] = combined["label"].map(gesture_to_id)
-
-
+    
+    pd.set_option('display.max_rows', None)
+    
     X = combined.iloc[:, :-1]
     y = combined.iloc[:, -1]
-    #combined.to_csv('xxx.csv',index=False)
 
+    #combined.to_csv('xxx.csv',index=False)
     #split both csv 70/20/10 train/test/test_2
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -54,7 +55,7 @@ def main(labels):
     print('F1 Score:', metrics.f1_score(y_test, y_pred,average=None))
 
     #save model
-    with open(f'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl', 'wb') as f:
+    with open(f'ML_pipeline/models/random_forest_az_thumbsup_pinch2.pkl', 'wb') as f:
         pickle.dump(model, f) 
 
 if __name__ == '__main__':

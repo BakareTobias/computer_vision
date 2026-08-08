@@ -80,7 +80,7 @@ https://github.com/user-attachments/assets/a80414e1-f29d-427f-b28c-c463a3da0b60
 
 
 #### Data Collection & Preprocessing `data_collection.py`, `data_collection_dynamic.py`, `data_collection_img.py`
-Data is sourced from a combination of personal recordings and video/img datasets from Kaggle to create variation and prevent overfitting to one set of hand proportions. 5,00+ distinct instances are recorded and labelled across 28 classes.
+Data is sourced from a combination of personal recordings and video/img datasets from Kaggle to create variation and prevent overfitting to one set of hand proportions. 5,000+ distinct instances are recorded and labelled across 28 classes.
 Each data instance consists of 42 features representing the x, y coordinates of 21 hand landmarks, along with a label for the associated pose. `data_collection_dynamic.py` can process and store data for 86 landmarks(84 landmarks representing two hands, and two additional features representing the x and y distances between both hands)
 
 
@@ -102,6 +102,9 @@ Initial model choices were *Logistic Regression* and *Random Forest Classifier*.
 - Precision, accuracy, and F1 scores showed a slight drop-off
 - Type I and Type II errors in the confusion matrix increased
 
+Random Forest consistently achieved higher accuracy and F1 scores,
+likely because the nonlinear decision boundaries between similar
+hand poses were not well captured by Logistic Regression.
 
 **Random Forest maintained stronger performance as the number of classes increased.**
 
@@ -114,8 +117,7 @@ At 28 classes, Random Forest outperforms Logistic Regression more often, and by 
 
 
 #### Dynamic Gesture Recognition (LSTM)
-Two letters(J, Z) in the ASL alphabet are formed by a motion, not a single pose. An RNN was selected because dynamic gestures depend on a sequence of hand poses rather than a single frame. An LSTM
-allows the Neural Network to only remember the most recent poses relevant to the use case. 
+Two letters(J, Z) in the ASL alphabet are formed by a motion, not a single pose. An RNN was selected because dynamic gestures depend on a sequence of hand poses rather than a single frame.LSTMs were chosen because they can model temporal dependencies in a sequence of hand landmarks while mitigating the vanishing-gradient problem common in traditional RNNs.
 
 Landmark data is collected from video clips sourced on Kaggle. These clips are then processed down to a uniform sized sequence of frames. A third class 'other', comprising various clips of hand motions that are not J or Z are included 
 to avoid forced-choice error
@@ -207,7 +209,7 @@ python3 mouse_scroller.py
 
 ---
 
-### Relevance to Robotics
+### Robotics Applications
 
 The techniques used in this project are directly applicable to:
 

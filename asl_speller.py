@@ -14,7 +14,7 @@ def main():
 
     # load model
     path_to_RF_model = 'ML_pipeline/models/random_forest_az_thumbsup_pinch.pkl'
-    LSTM_model = load_model('ML_pipeline/models/LSMT_jz_all_landmarks_other.keras')
+    LSTM_model = 'ML_pipeline/models/LSMT_jz_all_landmarks_other.keras'
 
     classes_static = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','thumbs_up','pinch']
     classes_dynamic = ['J','Z','other']
@@ -22,6 +22,7 @@ def main():
     #load modules
     hand_detector = htm.HandDetector()
     gesture_detector = hgd.GestureDetection(path_to_model=path_to_RF_model)
+    dynamic_gesture_detector = hgd.DynamicGestureDetection(path_to_model=LSTM_model)
 
     text = ''
     last_predict = math.inf
@@ -52,13 +53,7 @@ def main():
                 #also remove the oldest frame from clip to maintain a rolling buffer of 27 frames
                 if len(clip) == 27:
                     #run ml model on dataset instance to predict as well as confidence score
-                    dynamic_input = np.array(clip).reshape(1,27,42)
-                    gesture_detected_dynamic = LSTM_model.predict(dynamic_input)
-
-                    predicted_class = np.argmax(gesture_detected_dynamic, axis=1)[0]
-                    confidence_dynamic = np.max(gesture_detected_dynamic)
-                    gesture_name = classes_dynamic[predicted_class]
-                    #print(gesture_detected_dynamic)
+                    gesture_name, confidence = dynamic_gesture_detector.predict(dataset_instance=clip, classes=classes_dynamic)
                     if gesture_name == 'other':
                         clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
                     else:

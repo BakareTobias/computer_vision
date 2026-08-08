@@ -1,3 +1,5 @@
+import logging
+
 import cv2
 import mediapipe as mp
 import time
@@ -72,8 +74,8 @@ class HandDetector():
                 normalized_landmarks.append(x)
                 normalized_landmarks.append(y)
 
-            except ZeroDivisionError:
-                #print('Zero error')
+            except ZeroDivisionError as e:
+                logging.info(f"Skipping edge case due to {e}")
                 normalized_landmarks = None
                 break
         if normalized_landmarks:

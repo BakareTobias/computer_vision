@@ -71,7 +71,10 @@ Landmark Normalization
      Text Translation
 ```
      
-<img width="360" height="270" alt="cdf4e035-deca-45ac-807e-f5ecae65f9dc" src="https://github.com/user-attachments/assets/cdc57a23-06b4-42e3-9c83-b85b9ed95a55" />
+
+https://github.com/user-attachments/assets/a80414e1-f29d-427f-b28c-c463a3da0b60
+
+
 
   A real-time alphabet-level American Sign Language (ASL) translation interface built on a custom hand gesture recognition pipeline. The system recognizes all 26 letters of the ASL alphabet, plus custom 'space' and 'backspace' gestures for a coherent typing experience. Built on webcam input using MediaPipe hand landmarks, a Random Forest classifier for static letter signs, and a Long Short Term Memory RNN for dynamic letters.
 

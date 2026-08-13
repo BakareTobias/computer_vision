@@ -60,9 +60,10 @@ class HandDetector():
             x = landmark_coordinates[key][0] - landmark_coordinates[0][0]
             y = -1 * (landmark_coordinates[key][1] - landmark_coordinates[0][1]) 
             
-            #each landmark coordinate normalized according to palm width(5-17)
-            standard_hand_width =  abs(landmark_coordinates[5][0] - landmark_coordinates[17][0])
+            
             try:#skip edge cases that cause division by zero error
+                #each landmark coordinate normalized according to palm width(5-17)
+                standard_hand_width =  abs(landmark_coordinates[5][0] - landmark_coordinates[17][0])
                 x /= standard_hand_width
                 # and palm height(0-5)
                 standard_hand_height = abs(landmark_coordinates[0][1] - landmark_coordinates[5][1])

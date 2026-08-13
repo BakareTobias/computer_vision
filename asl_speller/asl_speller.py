@@ -53,7 +53,7 @@ def main():
                 #also remove the oldest frame from clip to maintain a rolling buffer of 27 frames
                 if len(clip) == 27:
                     #run ml model on dataset instance to predict as well as confidence score
-                    gesture_name, confidence = dynamic_gesture_detector.predict(dataset_instance=clip, classes=classes_dynamic)
+                    gesture_name, confidence = dynamic_gesture_detector.predict(dataset_instance=clip, classes=classes_dynamic,sequence_length=27)
                     if gesture_name == 'other':
                         clip.pop(0)  # Remove the oldest frame to maintain a rolling buffer of 27 frames
                     else:

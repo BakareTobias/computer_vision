@@ -9,7 +9,7 @@ A collection of computer vision projects built on **OpenCV** and **MediaPipe**.
 - Includes custom space and backspace gestures
 - Real-time webcam inference using MediaPipe landmarks
 - Supports touchless cursor, click, scroll, and volume control
-- 5 unit tests written for core modules 
+- Unit tests written for core modules 
 
 ## Repository Structure
 

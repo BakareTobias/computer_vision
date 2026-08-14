@@ -1,11 +1,5 @@
 import unittest
-
-import numpy as np
-import pandas as pd
-
 from modules.hand_gesture_detection_module import GestureDetection, DynamicGestureDetection
-
-
 
 
 class TestGestureDetection(unittest.TestCase):
@@ -54,14 +48,16 @@ class TestDynamicGestureDetection(unittest.TestCase):
         wrong_length_dataset_instance = [0.0,0.0,0.474576,0.253521,0.762712,0.71831,0.779661,1.098592,0.898305,1.380282,0.338983,1.0,0.372881,1.253521,0.322034,0.915493,0.305085,0.619718,-0.016949,0.971831,0.0,1.225352,0.0,0.816901,0.033898,0.535211,-0.338983,0.915493,-0.322034,1.169014,-0.271186,0.774648,-0.220339,0.492958,-0.661017,0.816901,-0.644068,1.070423,-0.559322,0.802817,-0.508475,0.591549]#'A'
         classes_dynamic = ['J','Z','other']
 
-        """ gesture_detected, confidence = self.dgdt.predict(wrong_length_dataset_instance,
+        
+        with self.assertRaises(ValueError) as context:
+            gesture_detected, confidence = self.dgdt.predict(wrong_length_dataset_instance,
                                                          classes=classes_dynamic,
                                                          sequence_length=27,
                                                          no_features=42)
-        self.assertRaises(gesture_detected, ValueError) """
-        
+            
+        self.assertEqual(str(context.exception), "sequence_length must match no. of clips provided")
 
-        pass
+
 
     
 

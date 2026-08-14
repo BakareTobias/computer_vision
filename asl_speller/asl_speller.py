@@ -86,8 +86,12 @@ def main():
 
         cv2.putText(img, f"{text}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow("Image", img)
-        cv2.waitKey(1)#waiting for 1 millisecond before showing the next frame
+        key = cv2.waitKey(1) & 0xFF
+        
+        if key in (ord('q'), ord('Q')):
+            break
         frame_counter += 1
+        
 
 
 if __name__ == "__main__":

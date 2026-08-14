@@ -132,9 +132,9 @@ class DataCollection():
             cv2.putText(img, f"Frames captured: {counter//capture_rate}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             cv2.putText(img, f"Hit q to stop capturing", (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             cv2.imshow("Image", img)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-            elif cv2.waitKey(1) & 0xFF == ord('Q'):
+            key = cv2.waitKey(1) & 0xFF
+
+            if key in (ord('q'), ord('Q')):
                 break
         logging.info('Task finished successfully')        
 

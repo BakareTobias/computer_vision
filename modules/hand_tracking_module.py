@@ -49,7 +49,10 @@ class HandDetector():
                     if draw:
                             cv2.circle(img, (cx, cy), 6, (255, 122, 211), cv2.FILLED)
             except IndexError:
+                logging.error("Using handNo=1 will fail when there is only one hand detected")
                 return None
+        else:
+            landmark_coordinates = None
         return landmark_coordinates
 
     def normalizeLandmarks(self,landmark_coordinates):

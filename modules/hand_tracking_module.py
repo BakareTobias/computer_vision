@@ -1,3 +1,5 @@
+import logging
+
 import cv2
 import mediapipe as mp
 import time
@@ -47,7 +49,10 @@ class HandDetector():
                     if draw:
                             cv2.circle(img, (cx, cy), 6, (255, 122, 211), cv2.FILLED)
             except IndexError:
+                logging.error("Using handNo=1 will fail when there is only one hand detected")
                 return None
+        else:
+            landmark_coordinates = None
         return landmark_coordinates
 
     def normalizeLandmarks(self,landmark_coordinates):
@@ -58,9 +63,10 @@ class HandDetector():
             x = landmark_coordinates[key][0] - landmark_coordinates[0][0]
             y = -1 * (landmark_coordinates[key][1] - landmark_coordinates[0][1]) 
             
-            #each landmark coordinate normalized according to palm width(5-17)
-            standard_hand_width =  abs(landmark_coordinates[5][0] - landmark_coordinates[17][0])
+            
             try:#skip edge cases that cause division by zero error
+                #each landmark coordinate normalized according to palm width(5-17)
+                standard_hand_width =  abs(landmark_coordinates[5][0] - landmark_coordinates[17][0])
                 x /= standard_hand_width
                 # and palm height(0-5)
                 standard_hand_height = abs(landmark_coordinates[0][1] - landmark_coordinates[5][1])
@@ -72,8 +78,8 @@ class HandDetector():
                 normalized_landmarks.append(x)
                 normalized_landmarks.append(y)
 
-            except ZeroDivisionError:
-                #print('Zero error')
+            except ZeroDivisionError as e:
+                logging.info(f"Skipping edge case due to {e}")
                 normalized_landmarks = None
                 break
         if normalized_landmarks:

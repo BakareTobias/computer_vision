@@ -9,32 +9,43 @@ A collection of computer vision projects built on **OpenCV** and **MediaPipe**.
 - Includes custom space and backspace gestures
 - Real-time webcam inference using MediaPipe landmarks
 - Supports touchless cursor, click, scroll, and volume control
+- 5 unit tests written for core modules 
 
 ## Repository Structure
 
 
 ```
 computer_vision/
+├── asl_speller/                 # main files for running asl speller on local/web
+│   ├── asl_speller.py        
+│   ├── asl_speller_st.py
 │
 ├── ML_pipeline/                 # datasets, trained models, ML artifacts
-├── basics/                      # OpenCV/MediaPipe experiments
+│   ├── data_collection.py        
+│   ├── data_collection_lstm.py
+│   └── model_training.py
+│
 ├── modules/                     # reusable CV modules
+│   ├── data_collection_module.py
 │   ├── face_detection_module.py
 │   ├── hand_tracking_module.py
 │   └── hand_gesture_detection_module.py
 │
-├── asl_speller.py               # ASL translator
-├── asl_speller_st.py            # Streamlit deployment
-├── data_collection.py           # Collecting one-handed data from video/webcam
-├── data_collection_dynamic.py   # Collecting two-handed data from video/webcam
-├── model_training.py            # Loading data, training, evaluating model
-├── model_training_lstm.py       # Loading data, training, evaluating LSTM
+├── tests/                 # unit & integration tests for modules/
+│   ├── test_data_collection_module.py
+│   ├── test_hand_tracking_module.py
+│   └── test_hand_gesture_detection_module.py
 │
-├── finger_mouse.py              # cursor control
-├── mouse_scroller.py            # gesture scrolling
-├── volume_controller.py         # volume control
+├── touchless_comp_nav/                 # Touchless Computer Navigation
+│   ├── finger_mouse.py        
+│   ├── mouse_scroller.py
+│   └── volume_control.py
 │
-├── requirements.txt
+├── .gitignore             
+├── asl_chart.jpg            
+│
+├── requirements.txt             #streamlit requirements file
+├── requirements-dev.txt         #localhost requirements file
 └── README.md
 ```
 ## Features
@@ -54,7 +65,7 @@ computer_vision/
     - Volume control
 
 
-### 1. Alphabet-Level ASL Translation Interface `asl_speller.py`
+### 1. Alphabet-Level ASL Translation Interface `python -m asl_speller.asl_speller`
 
 ```
 Webcam
@@ -79,9 +90,9 @@ https://github.com/user-attachments/assets/a80414e1-f29d-427f-b28c-c463a3da0b60
   A real-time alphabet-level American Sign Language (ASL) translation interface built on a custom hand gesture recognition pipeline. The system recognizes all 26 letters of the ASL alphabet, plus custom 'space' and 'backspace' gestures for a coherent typing experience. Built on webcam input using MediaPipe hand landmarks, a Random Forest classifier for static letter signs, and a Long Short Term Memory RNN for dynamic letters.
 
 
-#### Data Collection & Preprocessing `data_collection.py`, `data_collection_dynamic.py`, `data_collection_img.py`
+#### Data Collection & Preprocessing `python -m ML_pipeline.data_collection.py`
 Data is sourced from a combination of personal recordings and video/img datasets from Kaggle to create variation and prevent overfitting to one set of hand proportions. 5,000+ distinct instances are recorded and labelled across 28 classes.
-Each data instance consists of 42 features representing the x, y coordinates of 21 hand landmarks, along with a label for the associated pose. `data_collection_dynamic.py` can process and store data for 86 landmarks(84 landmarks representing two hands, and two additional features representing the x and y distances between both hands)
+Each data instance consists of 42 features representing the x, y coordinates of 21 hand landmarks, along with a label for the associated pose. The algorithm can also process and store data for 86 landmarks(84 landmarks representing two hands, and two additional features representing the x and y distances between both hands)
 
 
 Landmark coordinates are recalculated using `landmark_0` as the origin point, then scaled relative to:
@@ -91,7 +102,7 @@ Landmark coordinates are recalculated using `landmark_0` as the origin point, th
 
 This keeps values fairly consistent across different hand positions and rotations from the webcam. Data for each class is stored in its own CSV file. 
 
-#### Model Selection & Training
+#### Model Selection & Training `python -m ML_pipeline.model_training`
 
 - Data from all classes is combined and split 70/30 into training and validation sets.
 - `stratify=True` ensures an equal ratio of all classes in both sets, avoiding class imbalance bias.
@@ -134,7 +145,7 @@ The model performs well on live camera feed, static images, as well as recorded 
 ---
 ---
 
-### 2. Touchless Computer Navigation `volume_control.py`, `finger_mouse.py`, `mouse_scroller.py`
+### 2. Touchless Computer Navigation `python -m touchless_comp_nav.volume_control.py`, `python -m touchless_comp_nav.finger_mouse.py`, `python -m touchless_comp_nav.mouse_scroller.py`
 
 
 A suite of scripts built using a combination of heuristics and Machine Learning for hands-free interaction with a computer. 

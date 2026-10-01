@@ -1,4 +1,4 @@
-# Static & Dynamic Hand Gesture Recognition
+# Hand Gesture Recognition: an Alphabet Level ASL interface, and Touchless Computer Navigation 
 
 ## Features
 

@@ -1,10 +1,26 @@
-# Computer Vision Projects
+# Static & Dynamic Hand Gesture Recognition
 
-A collection of computer vision projects built on **OpenCV** and **MediaPipe**.
+## Features
 
+- Real-time multi-hand detection
+- Kalman-filter smoothing
+- Modular MediaPipe wrappers
+- ML landmark based gesture classification
+
+## Applications
+1. Alphabet-Level ASL Translation Interface
+2. Touchless Computer Navigation
+    - cursor control
+    - Left click
+    - Right click
+    - Click-and-drag
+    - Volume control
+  
+      
 ## Key Results
 
-- Recognizes all 26 ASL alphabet letters
+- Current model recognizes all 26 ASL alphabet letters and other static hand gestures
+- Can be trained to recognize single and double hand gestures
 - Supports dynamic gesture recognition for J and Z using LSTM
 - Includes custom space and backspace gestures
 - Real-time webcam inference using MediaPipe landmarks
@@ -48,21 +64,7 @@ computer_vision/
 ├── requirements-dev.txt         #localhost requirements file
 └── README.md
 ```
-## Features
 
-- Real-time multi-hand detection
-- Kalman-filter smoothing
-- Modular MediaPipe wrappers
-- ML based gesture classification
-
-## Applications
-1. Alphabet-Level ASL Translation Interface
-2. Touchless Computer Navigation
-    - cursor control
-    - Left click
-    - Right click
-    - Click-and-drag
-    - Volume control
 
 
 ### 1. Alphabet-Level ASL Translation Interface `python -m asl_speller.asl_speller`

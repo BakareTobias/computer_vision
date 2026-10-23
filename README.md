@@ -1,4 +1,4 @@
-# Hand Gesture Recognition: an Alphabet Level ASL Interface, and Touchless Computer Navigation 
+# Hand Gesture Recognition: an Alphabet Level American Sign Language Interface, and Touchless Computer Navigation 
 
 ## Features
 
